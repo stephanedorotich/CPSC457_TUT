@@ -1,3 +1,7 @@
+// Author: Stéphane Dorotich
+// CPSC457 - Spring 2022
+// Use freely
+
 #include <iostream>
 #include <unistd.h>
 #include <cstring>
