@@ -26,8 +26,7 @@ int main(int argc, char ** argv) {
     }
 
     // Print all values from the vector
-    for (auto j : v) std::cout << j << " ";
-    std::cout << std::endl;
+    for (auto j : v) std::cout << j << std::endl;
 
     return 0;
 }
