@@ -20,6 +20,7 @@
 #include <cstdlib>
 #include <pthread.h>
 #include <unistd.h>
+#include <stdlib.h>
 
 
 // TODO
@@ -37,9 +38,11 @@ void * dartboard(void * ptr) {
     int * seed = (int *) ptr;
 
     // Seed srand uniquely for each thread
-    srand(time(NULL) + *seed);
+    struct random_data buf;
+    srandom_r(time(NULL) + *seed, &buf);
 
-    double x, y, r, pi; 
+    int32_t r;
+    double x, y, pi; 
     int hits;
 
     // throw darts
@@ -47,10 +50,12 @@ void * dartboard(void * ptr) {
         hits = 0;
         for (int j = 0; j < Globals.n_darts; j++)  {
             // (x,y) are random between -1 and 1
-            r = (double)random()/RAND_MAX;
-            x = (2.0 * r) - 1.0;
-            r = (double)random()/RAND_MAX;
-            y = (2.0 * r) - 1.0;
+            random_r(&buf, &r);
+            x = (double) r/RAND_MAX;
+            x = (2.0 * x) - 1.0;
+            random_r(&buf, &r);
+            y = (double) r/RAND_MAX;
+            y = (2.0 * y) - 1.0;
             // if our random dart landed inside the unit circle, increment the score
             if (((x*x) + (y*y)) <= 1.0) {
                 hits++;
