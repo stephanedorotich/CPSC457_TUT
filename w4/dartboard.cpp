@@ -129,7 +129,7 @@ int main (int argc, char ** argv) {
     pthread_t * th = (pthread_t *) malloc(n_threads * sizeof(pthread_t));
     // Allocate memory for n_threads
     struct t_arg * targs = (struct t_arg *) malloc(n_threads * sizeof(struct t_arg));
-
+    
     // Initialize thread arguments
     // Create n_threads
     for (int i = 0; i < n_threads; i++) {
@@ -147,6 +147,8 @@ int main (int argc, char ** argv) {
         if (pthread_join(th[i], NULL) != 0) thread_join_error(i);
         pi_sum += targs[i].avg_pi;
     }
+    free(th);       // Clean up after yourself!
+    free(targs);    // Clean up after yourself!
     
     // ============================================================
     // ============================================================
