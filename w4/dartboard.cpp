@@ -21,32 +21,31 @@
 #include <pthread.h>
 #include <unistd.h>
 
-struct t_arg {
-    int seed;
-    int n_darts;
-    int n_threads;
-    int n_trials;
-    double avg_pi = 0;
-};
+
+// TODO
+// Thread argument structure
 
 struct Global {
     int num_loops;
+    int n_darts;
+    int n_trials;
 } Globals;
 
 // Throw darts and estimate pi (pthread routine)
 void * dartboard(void * ptr) {
-    struct t_arg * t = (struct t_arg *) ptr;
+    // TODO: cast thread argument structure
+    int * seed = (int *) ptr;
 
     // Seed srand uniquely for each thread
-    srand(time(NULL) + t->seed);
+    srand(time(NULL) + *seed);
 
     double x, y, r, pi; 
     int hits;
 
     // throw darts
-    for (int i = 0; i < t->n_trials; i++) {
+    for (int i = 0; i < Globals.n_trials; i++) {
         hits = 0;
-        for (int j = 0; j < t->n_darts; j++)  {
+        for (int j = 0; j < Globals.n_darts; j++)  {
             // (x,y) are random between -1 and 1
             r = (double)random()/RAND_MAX;
             x = (2.0 * r) - 1.0;
@@ -59,9 +58,9 @@ void * dartboard(void * ptr) {
         }
         Globals.num_loops++; // DO NOT REMOVE THIS LINE
         // Estimate pi for this trial
-        pi = 4.0 * (double)hits / (double)t->n_darts;
-        // Calculate running average
-        t->avg_pi = (double) ((t->avg_pi*i) + pi) / (double) (i+1);
+        pi = 4.0 * (double)hits / (double)Globals.n_darts;
+        // Calculate running average in thread
+        // TODO
     }
     return NULL;
 }
@@ -91,25 +90,25 @@ int main (int argc, char ** argv) {
     double pi_sum, pi_est, err;
     double pi_60 = 3.141592653589793238462643383279502884197169399375105820974944;
 
+    // ==========================================
+    // ==========================================
+
 
     // Allocate memory for pthreads and their arguments
-    pthread_t * th = (pthread_t *) malloc(n_threads*sizeof(pthread_t *));
-    struct t_arg * targs = (struct t_arg *) malloc(n_threads*sizeof(struct t_arg *));
 
     // Initialize thread arguments
-    targs[0].seed = 0;
-    targs[0].n_darts = n_darts;
-    targs[0].n_threads = n_threads;
-    targs[0].n_trials = n_trials;
 
     // Create threads
-    pthread_create(&th[0], NULL, &dartboard, &targs[0]);
 
     // Join threads
-    pthread_join(th[0], NULL);
     
     // Sum all results
-    pi_sum = targs[0].avg_pi;
+    pi_sum = 0;
+
+
+
+    // ==========================================
+    // ==========================================
 
     // Compute estimated value of pi
     pi_est = pi_sum / n_threads;
