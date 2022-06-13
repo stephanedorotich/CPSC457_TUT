@@ -1,0 +1,4 @@
+THIS is an example FILE WITH a lot of text in it
+THEY must BE sorted in REVERSE ALPHABETICAL order based 
+on their FIRST LETTER
+all UPPERCASE words SHOULD APPEAR after lowercase WORDS
